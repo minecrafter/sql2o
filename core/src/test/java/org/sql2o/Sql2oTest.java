@@ -1268,6 +1268,29 @@ public class Sql2oTest extends BaseMemDbTest {
 
     }
 
+    @Test
+    public void testUuidSerialization() {
+        try (Connection connection = sql2o.open()) {
+            connection.createQuery("create table testUuid(id integer primary key, val varchar(36))")
+                    .executeUpdate();
+
+            UUID uuid = UUID.randomUUID();
+
+            connection.createQuery("insert into testUuid (id, val) values (:id, :val)")
+                    .addParameter("id", 1)
+                    .addParameter("val", uuid)
+                    .executeUpdate();
+
+            String val = connection.createQuery("select val from testUuid where id = :id")
+                    .addParameter("id", 1)
+                    .executeScalar(String.class);
+
+            assertThat(val, is(equalTo(uuid.toString())));
+        }
+
+
+    }
+
     /************** Helper stuff ******************/
 
     private void createAndFillUserTable() {

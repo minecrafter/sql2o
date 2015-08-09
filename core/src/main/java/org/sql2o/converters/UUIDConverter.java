@@ -21,5 +21,10 @@ public class UUIDConverter extends ConverterBase<UUID> {
 
         throw new ConverterException("Cannot convert type " + val.getClass() + " " + UUID.class);
     }
+
+    @Override
+    public Object toDatabaseParam(UUID val) {
+        return val.toString();
+    }
 }
 
